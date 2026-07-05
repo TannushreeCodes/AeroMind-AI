@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMind AI - AQI Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 219, 98, 0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .logo i {
+            font-size: 35px;
+            color: white;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, #a8b2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 16px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .result h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .result p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* AQI Color coding */
+        .good { background: rgba(0, 228, 0, 0.2); border: 2px solid #00e400; color: #00e400; }
+        .moderate { background: rgba(255, 255, 0, 0.2); border: 2px solid #ffff00; color: #ffff00; }
+        .unhealthy-sensitive { background: rgba(255, 126, 0, 0.2); border: 2px solid #ff7e00; color: #ff7e00; }
+        .unhealthy { background: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000; color: #ff0000; }
+        .very-unhealthy { background: rgba(143, 63, 151, 0.2); border: 2px solid #8f3f97; color: #8f3f97; }
+        .hazardous { background: rgba(126, 0, 35, 0.2); border: 2px solid #7e0023; color: #7e0023; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-wind"></i>
+            </div>
+            <h1>AeroMind AI</h1>
+            <p class="tagline">Real-time Air Quality Index Prediction System</p>
+        </div>
+
+        <form method="POST" action="/predict">
+            <div class="form-group">
+                <i class="fas fa-smog"></i>
+                <input type="number" step="0.01" name="PM2.5" placeholder="PM2.5 (μg/m³)" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-cloud"></i>
+                <input type="number" step="0.01" name="PM10" placeholder="PM10 (μg/m³)" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-temperature-high"></i>
+                <input type="number" step="0.01" name="NO2" placeholder="NO₂ (μg/m³)" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-industry"></i>
+                <input type="number" step="0.01" name="SO2" placeholder="SO₂ (μg/m³)" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-fire"></i>
+                <input type="number" step="0.01" name="CO" placeholder="CO (mg/m³)" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-atom"></i>
+                <input type="number" step="0.01" name="O3" placeholder="O₃ (μg/m³)" required>
+            </div>
+            
+            <button type="submit">
+                <i class="fas fa-chart-line"></i> Predict Air Quality
+            </button>
+        </form>
+
+        <!-- Flask result yaha aayega -->
+        {% if prediction_text %}
+        <div class="result {{ category }}">
+            <h2>{{ prediction_text }}</h2>
+            <p>{{ category_text }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
