@@ -22,7 +22,6 @@ def get_aqi_category(aqi):
     elif aqi <= 300:
         return 'very-unhealthy', '🟣 Very Unhealthy - Health alert'
     else:
-         else:
         return 'hazardous', '⚫ Hazardous - Emergency coditions'
 
 # Define route for home page
